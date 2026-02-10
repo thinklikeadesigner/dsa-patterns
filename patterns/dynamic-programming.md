@@ -91,6 +91,7 @@ def min_path_sum(grid, r=0, c=0):
 | Max Path Sum (grid, right/down moves) | 2026-02-08 | Struggled | Same or/and bug — didn't catch it despite just seeing it |
 | Summing Squares (min perfect squares summing to n) | 2026-02-09 | Failed | 5 bugs: missing return on memo hit, loop over all numbers instead of perfect squares, recursive call didn't reduce n, subtracted 1 from count undoing the +1, unnecessary if/else branch |
 | Counting Change (number of ways to make amount with coins) | 2026-02-09 | Watched | New problem — watched walkthrough, confidence 0. Code was correct but need to internalize the pattern. |
+| Array Stepper (can you reach last index?) | 2026-02-09 | Struggled | 1 bug: used `i` as loop variable, shadowing the function parameter. Needed 1 hint to spot it. |
 
 ## My Mistakes
 - **2026-02-08**: Grid path count — used `or` instead of `and` for the destination base case (`r == last_row or c == last_col` instead of `and`). This incorrectly assumes any cell on the last row/column has exactly 1 path to the end, ignoring possible "X" blockers along the remaining edge. The recursion handles edges naturally — only the actual destination `(rows-1, cols-1)` should return 1.
@@ -102,3 +103,4 @@ def min_path_sum(grid, r=0, c=0):
   4. **Subtracted 1 from count in `min()`** — undid the `1 +` that correctly counts using one square.
   5. **Unnecessary if/else checking `is_perfect_square`** — the loop itself should only generate perfect squares.
   **Drill this: in "min coins/squares" DP, loop over the *choices* (squares), subtract the choice from n, recurse on the remainder. Pattern is exactly like coin change.**
+- **2026-02-09**: Array Stepper — **Variable shadowing**: used `i` as the `for` loop variable, overwriting the function parameter `i`. This meant `i + 1` stepped from the loop counter instead of the current position, and `memo[i]` cached the wrong index. **Drill this: never reuse parameter names as loop variables. Use descriptive names (`step`, `qty`, `offset`).**

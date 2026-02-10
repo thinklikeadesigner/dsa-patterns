@@ -84,6 +84,20 @@ def min_path_sum(grid, r=0, c=0):
 3. **Base case**: What are the trivially known values?
 4. **Answer**: Where in the table is the final answer?
 
+## Optimization: String Slicing → Index Pointers
+When your DP recurses on substrings, replace slicing with `(i, j)` pointers. Avoids O(n) copy per call and makes memo keys cheap.
+
+| Slicing | Pointers |
+|---------|----------|
+| `string` (whole) | `string[i:j]` (never actually sliced) |
+| `string[1:]` | `i + 1, j` |
+| `string[:-1]` | `i, j - 1` |
+| `string[1:-1]` | `i + 1, j - 1` |
+| `len(string) == 0` | `i > j` |
+| `len(string) == 1` | `i == j` |
+| `string[0]` / `string[-1]` | `string[i]` / `string[j]` |
+| `memo[string]` | `memo[(i, j)]` |
+
 ## Problems Solved
 | Problem | Date | Result | Notes |
 |---------|------|--------|-------|

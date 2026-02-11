@@ -98,6 +98,73 @@ When your DP recurses on substrings, replace slicing with `(i, j)` pointers. Avo
 | `string[0]` / `string[-1]` | `string[i]` / `string[j]` |
 | `memo[string]` | `memo[(i, j)]` |
 
+### Example: Can Concat (Word Break Pattern)
+
+**Brute force (no memoization — exponential time):**
+```python
+def can_concat(s, words):
+  if s == "":
+    return True
+
+  for word in words:
+    if s.startswith(word):
+      suffix = s[len(word):]
+      if can_concat(suffix, words):
+        return True
+
+  return False
+```
+
+**Slicing version with memo (slower — O(n) per slice):**
+```python
+def can_concat(s, words):
+  return _can_concat(s, words, {})
+
+def _can_concat(s, words, memo):
+  if s in memo:
+    return memo[s]
+  if s == "":
+    return True
+
+  for word in words:
+    if s.startswith(word):
+      suffix = s[len(word):]  # O(n) string copy
+      if _can_concat(suffix, words, memo):
+        memo[s] = True
+        return True
+
+  memo[s] = False
+  return False
+```
+
+**Pointer version (faster — O(1) per step):**
+```python
+def can_concat(s, words):
+  return _can_concat(s, words, 0, {})
+
+def _can_concat(s, words, i, memo):
+  if i in memo:
+    return memo[i]
+  if i == len(s):
+    return True
+
+  for word in words:
+    if s.startswith(word, i):  # check at position i
+      if _can_concat(s, words, i + len(word), memo):
+        memo[i] = True
+        return True
+
+  memo[i] = False
+  return False
+```
+
+**Key changes:**
+- `s` → `i` (position instead of substring)
+- `s == ""` → `i == len(s)` (reached the end)
+- `s.startswith(word)` → `s.startswith(word, i)` (check at position i)
+- `s[len(word):]` → `i + len(word)` (advance pointer, no slicing)
+- `memo[s]` → `memo[i]` (integer keys instead of string keys)
+
 ## Problems Solved
 | Problem | Date | Result | Notes |
 |---------|------|--------|-------|
@@ -107,6 +174,9 @@ When your DP recurses on substrings, replace slicing with `(i, j)` pointers. Avo
 | Counting Change (number of ways to make amount with coins) | 2026-02-09 | Watched | New problem — watched walkthrough, confidence 0. Code was correct but need to internalize the pattern. |
 | Array Stepper (can you reach last index?) | 2026-02-09 | Struggled | 1 bug: used `i` as loop variable, shadowing the function parameter. Needed 1 hint to spot it. |
 | Max Palindromic Subsequence | 2026-02-09 | Struggled | Missed the core decision (check first==last), tried wrong comparisons, forgot to memo the match branch. Needed several hints but worked through each fix. |
+| Can Concat (can words concatenate to form string?) | 2026-02-11 | Solved | 2 bugs: off-by-one in slicing (`slice_factor + 1` instead of `slice_factor`), and used `or` instead of `and` for the prefix match check. Fixed both with hints. |
+| Quickest Concat (min words to form string) | 2026-02-11 | Solved | Extended Can Concat to count minimum words. Key insight: same structure as min coins problem — `min(1 + recurse(remaining))` across all valid word choices. Return -1 if impossible (check for `float('inf')`). |
+| Valid Compound (check if elements form compound) | 2026-02-11 | Solved | Recognized as word break pattern, used pointer optimization. Pre-processed elements to lowercase once. Clean application of the pattern with minor case-handling twist. |
 
 ## My Mistakes
 - **2026-02-08**: Grid path count — used `or` instead of `and` for the destination base case (`r == last_row or c == last_col` instead of `and`). This incorrectly assumes any cell on the last row/column has exactly 1 path to the end, ignoring possible "X" blockers along the remaining edge. The recursion handles edges naturally — only the actual destination `(rows-1, cols-1)` should return 1.
@@ -124,3 +194,4 @@ When your DP recurses on substrings, replace slicing with `(i, j)` pointers. Avo
   2. **Wrong slicing** — used `string[:1]` (first char) instead of `string[:-1]` (everything but last). Also tried `string[2:]`/`string[:-2]` instead of `string[1:-1]` for chopping both ends.
   3. **Forgot to memo the match branch** — returned `2 + recurse(...)` without storing in memo first.
   **Drill this: palindrome DP has two branches — match (2 + recurse middle) vs no match (max of drop-first, drop-last). Always memo before returning.**
+- **2026-02-11**: Can Concat — Used `or` instead of `and` when checking the condition to continue recursing. **Pattern: when you have a condition that must be true before recursing down a branch, use `and` to combine the condition check with the recursive call.** Example: `if word == beginning_of_s and recurse(...)` means "only recurse if the condition holds." Using `or` would incorrectly return True whenever the condition is true, regardless of the recursion result.

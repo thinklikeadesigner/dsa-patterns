@@ -13,7 +13,7 @@ merge-intervals,meta,,2026-02-08,0,2.5,0,0
 monotonic-stack,google+meta,,2026-02-08,0,2.5,0,0
 heap-priority-queue,google+meta,,2026-02-08,0,2.5,0,0
 linked-lists,meta,,2026-02-08,0,2.5,0,0
-dynamic-programming,google,2026-02-09,2026-02-10,1,1.3,6,0
+dynamic-programming,google,2026-02-11,2026-02-12,1,1.0,9,0
 trie,google,,2026-02-08,0,2.5,0,0
 dijkstra-weighted-graphs,google,,2026-02-08,0,2.5,0,0
 prefix-sums,google+meta,,2026-02-08,0,2.5,0,0

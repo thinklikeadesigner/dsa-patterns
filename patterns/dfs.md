@@ -91,6 +91,8 @@ def has_cycle(graph, n):
 ## Problems Solved
 | Problem | Date | Result | Notes |
 |---------|------|--------|-------|
+| Longest Path (DAG) | 2026-02-11 | Solved | DFS with memoization. Struggled with counting edges vs nodes (set count=1 initially instead of 0). Needed hint about using max() instead of sum for branches. |
 
 ## My Mistakes
-- (none yet)
+- **2026-02-11**: Counted nodes instead of edges (initialized count=1 instead of 0 for base case)
+- **2026-02-11**: Tried summing all neighbor paths instead of taking max of branches

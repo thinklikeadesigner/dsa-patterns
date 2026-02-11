@@ -296,3 +296,9 @@ for a, b in prereqs:
 - Course Schedule III (with weights)
 - Parallel Course scheduling
 - Critical Path Method (project management)
+
+---
+
+## My Mistakes
+
+- **2026-02-11**: Forgot the `+ 1` when counting nodes. Wrote `memo[node] = max_path` instead of `memo[node] = 1 + max_path`. This caused leaf nodes to return 0 instead of 1, and the entire calculation was off. **Remember: Add `+ 1` AFTER the loop to count nodes (the node itself). Add `+ 1` INSIDE the loop to count edges.**

@@ -6,6 +6,8 @@ This directory is a spaced-repetition DSA review system. When the user opens Cla
 
 - **`tracker.csv`** holds spaced repetition state for each pattern
 - **`patterns/*.md`** hold detailed notes, templates, and problem logs for each pattern
+- **`problems.csv`** holds a master list of all problems attempted (one row per problem)
+- **`problem_patterns.csv`** maps problems to patterns (many-to-many) with approach notes, complexity, and when to prefer each approach
 - The user interacts conversationally; you read/write these files to manage the system
 
 ---
@@ -36,13 +38,41 @@ This directory is a spaced-repetition DSA review system. When the user opens Cla
 
 When the user says they solved (or attempted) a problem:
 
-1. Identify which pattern it belongs to.
-2. Add a row to the **Problems Solved** table in the pattern's `.md` file:
+1. Identify **all patterns** it can be solved with (ask the user if not obvious).
+2. Add a row to the **Problems Solved** table in the **primary** pattern's `.md` file:
    - Problem name/number, today's date, result (Solved/Struggled/Failed), notes from what the user said.
 3. If the user mentions a mistake, add it to **My Mistakes** with today's date.
 4. Ask for confidence if not obvious: "How confident did you feel? (0-5)"
    - Or infer from what they said (e.g., "nailed it" → 5, "struggled with edge cases" → 3, "couldn't solve it" → 1)
 5. Update `tracker.csv` using the SM-2 algorithm below.
+6. Add or update the problem in `problems.csv` (one row — use the best result across attempts).
+7. Add one row per pattern to `problem_patterns.csv` with:
+   - `approach_notes`: how this pattern solves the problem
+   - `time_complexity`: Big-O for this approach
+   - `when_to_prefer`: when you'd choose this approach over the others
+
+### "What patterns solve [problem]?"
+
+1. Read `problem_patterns.csv` and filter by the given problem.
+2. For each pattern match, show:
+   - Pattern name
+   - Approach notes
+   - Time complexity
+   - When to prefer this approach
+3. Highlight trade-offs between approaches.
+
+### "What problems use [pattern]?"
+
+1. Read `problem_patterns.csv` and filter by the given pattern.
+2. List all problems that can be solved with it, grouped by result (Solved/Struggled/Failed).
+3. Show the `when_to_prefer` note for each — this reveals when this pattern is the right tool.
+
+### "Show connections" or "Pattern overlap"
+
+1. Read `problem_patterns.csv`.
+2. Find problems that map to 2+ patterns.
+3. Display them grouped by problem, showing all approaches side by side.
+4. This is the "interview meta-skill" view — knowing multiple approaches and when each is better.
 
 ### "Add new pattern"
 
@@ -111,6 +141,36 @@ two-pointers,google+meta,,2026-02-08,0,2.5,0,0
 - `ease_factor`: float, starts at 2.5, clamped to [1.3, 3.0]
 - `times_reviewed`: integer count
 - `streak`: consecutive correct reviews
+
+---
+
+## problems.csv Format
+
+```csv
+problem,date_first_seen,best_result,notes
+semesters-required,2026-02-11,Solved,"Kahn's algorithm with level-order BFS."
+```
+
+- `problem`: kebab-case unique identifier
+- `date_first_seen`: YYYY-MM-DD when first attempted
+- `best_result`: best outcome across all attempts (Solved > Struggled > Failed > Watched)
+- `notes`: brief summary of the problem and experience
+
+## problem_patterns.csv Format
+
+```csv
+problem,pattern,approach_notes,time_complexity,when_to_prefer
+semesters-required,topological-sort,Kahn's algorithm: BFS from zero-indegree nodes,O(V+E),When you need the number of levels/layers
+semesters-required,dynamic-programming,DFS + memo: longest path from any start node,O(V+E),When thinking bottom-up from leaves
+```
+
+- `problem`: kebab-case, matches a row in `problems.csv`
+- `pattern`: kebab-case, matches a row in `tracker.csv` and a file in `patterns/`
+- `approach_notes`: how this pattern solves the problem
+- `time_complexity`: Big-O for this specific approach
+- `when_to_prefer`: when you'd choose this approach over alternatives
+
+The many-to-many relationship is the key insight: one problem can map to multiple patterns, and one pattern solves many problems. The `when_to_prefer` column trains the meta-skill of knowing *which* approach to reach for.
 
 ---
 

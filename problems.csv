@@ -1,13 +1,13 @@
-problem,date_first_seen,best_result,notes
-longest-path-dag,2026-02-11,Solved,DFS with memoization. Counting edges vs nodes tripped me up.
-grid-path-count,2026-02-08,Struggled,Had to look at solution for the bug
-max-path-sum,2026-02-08,Struggled,Same or/and bug — didn't catch it despite just seeing it
-summing-squares,2026-02-09,Failed,5 bugs: missing return on memo hit; loop over all numbers instead of perfect squares; recursive call didn't reduce n; subtracted 1 from count; unnecessary if/else branch
-counting-change,2026-02-09,Watched,Watched walkthrough. Code was correct but need to internalize the pattern.
-array-stepper,2026-02-09,Struggled,1 bug: used i as loop variable shadowing the function parameter. Needed 1 hint.
-max-palindromic-subsequence,2026-02-09,Struggled,Missed core palindrome check. Wrong slicing logic. Forgot to memo match branch.
-can-concat,2026-02-11,Solved,2 bugs: off-by-one in slicing and used or instead of and for prefix match. Fixed with hints.
-quickest-concat,2026-02-11,Solved,Extended Can Concat to count min words. Same structure as min coins — min(1 + recurse(remaining)).
-valid-compound,2026-02-11,Solved,Word break pattern with pointer optimization. Pre-processed elements to lowercase.
-count-compounds,2026-02-11,Solved,Word break counting variant. Fixed base case (return 1 when complete) and initial count.
-semesters-required,2026-02-11,Solved,"Kahn's algorithm with level-order BFS. Struggled with indegrees concept, directed graph construction, and queue level processing."
+problem,date_first_seen,best_result,difficulty,stability,last_reviewed,next_review,times_reviewed,notes
+longest-path-dag,2026-02-11,Solved,5.0,0,,2026-02-11,0,DFS with memoization. Counting edges vs nodes tripped me up.
+grid-path-count,2026-02-08,Struggled,5.0,0,,2026-02-08,0,Had to look at solution for the bug
+max-path-sum,2026-02-08,Struggled,5.0,0,,2026-02-08,0,Same or/and bug — didn't catch it despite just seeing it
+summing-squares,2026-02-09,Failed,5.0,0,,2026-02-09,0,5 bugs: missing return on memo hit; loop over all numbers instead of perfect squares; recursive call didn't reduce n; subtracted 1 from count; unnecessary if/else branch
+counting-change,2026-02-09,Watched,5.0,0,,2026-02-09,0,Watched walkthrough. Code was correct but need to internalize the pattern.
+array-stepper,2026-02-09,Struggled,5.0,0,,2026-02-09,0,1 bug: used i as loop variable shadowing the function parameter. Needed 1 hint.
+max-palindromic-subsequence,2026-02-09,Struggled,5.0,0,,2026-02-09,0,Missed core palindrome check. Wrong slicing logic. Forgot to memo match branch.
+can-concat,2026-02-11,Solved,5.0,0,,2026-02-11,0,2 bugs: off-by-one in slicing and used or instead of and for prefix match. Fixed with hints.
+quickest-concat,2026-02-11,Solved,5.0,0,,2026-02-11,0,Extended Can Concat to count min words. Same structure as min coins — min(1 + recurse(remaining)).
+valid-compound,2026-02-11,Solved,5.0,0,,2026-02-11,0,Word break pattern with pointer optimization. Pre-processed elements to lowercase.
+count-compounds,2026-02-11,Solved,5.0,0,,2026-02-11,0,Word break counting variant. Fixed base case (return 1 when complete) and initial count.
+semesters-required,2026-02-11,Solved,5.0,0,,2026-02-11,0,"Kahn's algorithm with level-order BFS. Struggled with indegrees concept, directed graph construction, and queue level processing."

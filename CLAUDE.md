@@ -16,23 +16,26 @@ This directory is a spaced-repetition DSA review system. When the user opens Cla
 
 ### "What am I working on today?"
 
-1. Read `tracker.csv`.
+1. Read `tracker.csv` AND `problems.csv`.
 2. Get today's date.
-3. Categorize each pattern:
+3. Categorize each **pattern** (from `tracker.csv`):
    - **Overdue**: `next_review < today`
    - **Due today**: `next_review == today`
-   - **New**: `interval_days == 0` (never reviewed)
+   - **New**: `stability == 0` (never reviewed)
    - **Not due**: `next_review > today`
-4. If the user has stated a target company (Google, Meta, or both), filter out irrelevant patterns using `company_relevance`:
+4. Categorize each **problem** (from `problems.csv`):
+   - Same rules: overdue / due today / new (`stability == 0`) / not due
+5. If the user has stated a target company (Google, Meta, or both), filter out irrelevant patterns using `company_relevance`:
    - Meta-only → skip patterns tagged `google` (e.g., DP, Trie, Dijkstra)
    - Google-only → skip patterns tagged `meta`
    - Both or unspecified → include everything
-5. Prioritize: **overdue first** (oldest first) → **due today** → **new patterns**.
-6. Output a focused plan of **2–3 items max**. For each item, show:
-   - Pattern name
+6. Prioritize: **overdue first** (oldest first) → **due today** → **new items**.
+7. Output a focused plan of **2–3 items max**, mixing patterns and problems. For each item, show:
+   - **[Pattern Review]** or **[Problem Review]** label
+   - Item name
    - Why it's up (overdue by X days / due today / new)
-   - A suggested action (review the template, solve a specific problem, etc.)
-7. Ask: "Want to start with [first item]?"
+   - A suggested action (write template from memory, explain approach from memory, etc.)
+8. Ask: "Want to start with [first item]?"
 
 ### "Log a problem"
 
@@ -42,10 +45,10 @@ When the user says they solved (or attempted) a problem:
 2. Add a row to the **Problems Solved** table in the **primary** pattern's `.md` file:
    - Problem name/number, today's date, result (Solved/Struggled/Failed), notes from what the user said.
 3. If the user mentions a mistake, add it to **My Mistakes** with today's date.
-4. Ask for confidence if not obvious: "How confident did you feel? (0-5)"
-   - Or infer from what they said (e.g., "nailed it" → 5, "struggled with edge cases" → 3, "couldn't solve it" → 1)
-5. Update `tracker.csv` using the SM-2 algorithm below.
-6. Add or update the problem in `problems.csv` (one row — use the best result across attempts).
+4. Ask for grade if not obvious: "How did that feel? Again (1) / Hard (2) / Good (3) / Easy (4)"
+   - Or infer from what they said (e.g., "nailed it" → Easy, "struggled with edge cases" → Hard, "couldn't solve it" → Again)
+5. Update `tracker.csv` for the primary pattern using the FSRS algorithm below.
+6. Add or update the problem in `problems.csv` (one row — use the best result across attempts). Initialize FSRS state for new problems: `difficulty=5.0, stability=0, next_review=today, times_reviewed=0`. Then run FSRS with the grade to set the first real stability/next_review.
 7. Add one row per pattern to `problem_patterns.csv` with:
    - `approach_notes`: how this pattern solves the problem
    - `time_complexity`: Big-O for this approach
@@ -79,81 +82,115 @@ When the user says they solved (or attempted) a problem:
 1. Ask for the pattern name and company relevance (google+meta, google, meta).
 2. Create `patterns/<kebab-case-name>.md` using the template below.
 3. Add a row to `tracker.csv` with:
-   - `interval_days=0`, `next_review=<today>`, `ease_factor=2.5`, `times_reviewed=0`, `streak=0`
+   - `difficulty=5.0`, `stability=0`, `next_review=<today>`, `times_reviewed=0`
 
-### "Review [pattern]"
+### "Review [pattern]" — Active Recall
 
-1. Read and display the pattern's `.md` file (When to Use, Core Idea, Template Code).
-2. Quiz the user: "When would you use this pattern? Can you write the template from memory?"
-3. Based on how they do, ask for confidence (0-5) and update `tracker.csv`.
+1. Read the pattern's `.md` file but **only show** the pattern name and "When to Use" section.
+2. Ask: **"Write the template code for this pattern from memory."**
+3. Wait for the user's attempt.
+4. **Then** show the saved Template Code side by side for comparison.
+5. Ask: "How did that go? **Again (1) / Hard (2) / Good (3) / Easy (4)**"
+6. Update `tracker.csv` using the FSRS algorithm below.
+
+### "Review [problem]" — Active Recall
+
+1. Show **only the problem name**.
+2. Ask: **"What pattern(s) would you use? Walk through your approach."**
+3. Wait for the user's explanation.
+4. **Then** show the saved `approach_notes` and `time_complexity` from `problem_patterns.csv` for comparison.
+5. Ask: "How did that go? **Again (1) / Hard (2) / Good (3) / Easy (4)**"
+6. Update `problems.csv` using the FSRS algorithm below.
 
 ---
 
-## SM-2 Spaced Repetition Algorithm
+## FSRS Spaced Repetition Algorithm
 
-When updating `tracker.csv` after a review:
+When updating `tracker.csv` or `problems.csv` after a review.
 
-### Confidence 4–5 (Got it):
+### Grade Scale
 ```
-interval_days = max(1, round(interval_days * ease_factor))
-ease_factor = min(3.0, ease_factor + 0.1)
-streak += 1
-```
-Special case: if `interval_days` was 0 (first review), set `interval_days = 1`.
-
-### Confidence 2–3 (Struggled):
-```
-interval_days = max(1, round(interval_days * 0.5))
-ease_factor = max(1.3, ease_factor - 0.15)
-streak = 0
+1 = Again  (couldn't recall / completely forgot)
+2 = Hard   (got it but struggled significantly)
+3 = Good   (got it with reasonable effort)
+4 = Easy   (nailed it, no hesitation)
 ```
 
-### Confidence 0–1 (Failed):
+### First Review (stability was 0 — new card):
 ```
-interval_days = 1
-ease_factor = max(1.3, ease_factor - 0.3)
-streak = 0
+stability = {1: 0.4, 2: 1.2, 3: 3.2, 4: 15.7}[grade]
+difficulty = clamp(7.2 - 1.7 × (grade - 1), 1, 10)
+```
+Difficulty maps to: Again → 7.2, Hard → 5.5, Good → 3.8, Easy → 2.1
+
+### Subsequent Reviews (stability > 0):
+```
+Step 1 — Retrievability (how likely you'd remember right now):
+  days_elapsed = today - last_reviewed
+  R = 0.9 ^ (days_elapsed / stability)
+
+Step 2 — Update difficulty:
+  D = clamp(D - 0.9 × (grade - 3), 1, 10)
+  D = round(D × 0.9 + 5 × 0.1, 2)        // mean-revert toward 5
+
+Step 3 — Update stability:
+  If grade ≥ 2 (passed):
+    SInc = 1 + 4.4 × ((11 - D) / 10) × S^(-0.11) × (e^(2.0 × (1 - R)) - 1)
+    S_new = S × SInc
+    If grade = 2 (Hard):  S_new = S_new × 0.8
+    If grade = 4 (Easy):  S_new = S_new × 1.3
+  If grade = 1 (Again):
+    S_new = 0.9 × D^(-0.4) × ((S + 1)^0.1 - 1) × e^(2.3 × (1 - R))
+    S_new = min(S_new, S)    // stability never increases on failure
 ```
 
 ### Always:
 ```
 last_reviewed = today
-next_review = today + interval_days
+next_review = today + max(1, round(S_new))
+stability = S_new
 times_reviewed += 1
 ```
 
-Expected progression (at ease 2.5): 1 → 3 → 7 → 18 → 44 → 90+
+### Key Differences from SM-2
+- **Difficulty** and **stability** are tracked separately (SM-2 merged them into ease_factor)
+- **Retrievability** accounts for how overdue a card is — reviewing an overdue card gives a bigger stability boost
+- Intervals grow naturally from stability; no fixed progression
 
 ---
 
 ## tracker.csv Format
 
 ```csv
-pattern,company_relevance,last_reviewed,next_review,interval_days,ease_factor,times_reviewed,streak
-two-pointers,google+meta,,2026-02-08,0,2.5,0,0
+pattern,company_relevance,last_reviewed,next_review,difficulty,stability,times_reviewed
+two-pointers,google+meta,,2026-02-08,5.0,0,0
 ```
 
 - `pattern`: kebab-case, matches filename in `patterns/`
 - `company_relevance`: `google+meta`, `google`, or `meta`
 - `last_reviewed`: YYYY-MM-DD or empty if never reviewed
 - `next_review`: YYYY-MM-DD (set to creation date for new patterns)
-- `interval_days`: integer, 0 = new/never reviewed
-- `ease_factor`: float, starts at 2.5, clamped to [1.3, 3.0]
+- `difficulty`: float [1, 10], starts at 5.0, represents inherent difficulty for the user
+- `stability`: float (days), 0 = new/never reviewed, represents days until 90% recall probability
 - `times_reviewed`: integer count
-- `streak`: consecutive correct reviews
 
 ---
 
 ## problems.csv Format
 
 ```csv
-problem,date_first_seen,best_result,notes
-semesters-required,2026-02-11,Solved,"Kahn's algorithm with level-order BFS."
+problem,date_first_seen,best_result,difficulty,stability,last_reviewed,next_review,times_reviewed,notes
+semesters-required,2026-02-11,Solved,5.0,0,,2026-02-11,0,"Kahn's algorithm with level-order BFS."
 ```
 
 - `problem`: kebab-case unique identifier
 - `date_first_seen`: YYYY-MM-DD when first attempted
 - `best_result`: best outcome across all attempts (Solved > Struggled > Failed > Watched)
+- `difficulty`: float [1, 10], starts at 5.0 (same as tracker.csv — FSRS state)
+- `stability`: float (days), 0 = new/never reviewed
+- `last_reviewed`: YYYY-MM-DD or empty if never reviewed as an SRS card
+- `next_review`: YYYY-MM-DD (initialized to date_first_seen for new problems)
+- `times_reviewed`: integer count of SRS reviews (not initial solve attempts)
 - `notes`: brief summary of the problem and experience
 
 ## problem_patterns.csv Format

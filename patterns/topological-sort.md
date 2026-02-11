@@ -79,6 +79,97 @@ def topo_sort_dfs(num_nodes, edges):
 - **All valid orderings**: Backtracking on Kahn's (pick any node with in-degree 0)
 - **Parallel scheduling**: In Kahn's, all nodes in the queue at the same time can run in parallel (same "level")
 
+## Semesters Required - Two Approaches
+
+### Approach 1: BFS + Level Counting (Kahn's Algorithm)
+Processes nodes **forward** (prerequisites → dependents), counting levels/semesters.
+
+```python
+from collections import deque
+
+def semesters_required(num_courses, prereqs):
+  graph = build_graph(num_courses, prereqs)
+  indegrees = build_indegrees(num_courses, prereqs)
+
+  queue = deque()
+  for course in range(num_courses):
+    if indegrees[course] == 0:
+      queue.append(course)
+
+  semesters = 0
+
+  while queue:
+    level_size = len(queue)  # All courses we can take THIS semester
+
+    for _ in range(level_size):
+      course = queue.popleft()
+
+      for neighbor in graph[course]:
+        indegrees[neighbor] -= 1
+
+        if indegrees[neighbor] == 0:
+          queue.append(neighbor)
+
+    semesters += 1
+
+  return semesters
+
+def build_graph(num_courses, prereqs):
+  graph = {i: [] for i in range(num_courses)}
+  for a, b in prereqs:
+    graph[a].append(b)  # a → b (directed)
+  return graph
+
+def build_indegrees(num_courses, prereqs):
+  indegrees = [0] * num_courses
+  for a, b in prereqs:
+    indegrees[b] += 1
+  return indegrees
+```
+
+### Approach 2: DFS + Memoization (Longest Path)
+Processes nodes **backward** (from leaves up), finding longest dependency chain.
+
+```python
+def semesters_required(num_courses, prereqs):
+  graph = build_graph(num_courses, prereqs)
+  distance = {}
+
+  # Initialize leaf nodes (no outgoing edges) to distance 1
+  for course in range(num_courses):
+    if len(graph[course]) == 0:
+      distance[course] = 1
+
+  # Calculate distance for all nodes
+  for course in range(num_courses):
+    traverse_distance(graph, course, distance)
+
+  return max(distance.values())
+
+def traverse_distance(graph, node, distance):
+  if node in distance:
+    return distance[node]
+
+  max_distance = 0
+  for neighbor in graph[node]:
+    neighbor_distance = traverse_distance(graph, neighbor, distance)
+    if neighbor_distance > max_distance:
+      max_distance = neighbor_distance
+
+  distance[node] = 1 + max_distance  # Count nodes (semesters)
+  return distance[node]
+
+def build_graph(num_courses, prereqs):
+  graph = {course: [] for course in range(num_courses)}
+  for a, b in prereqs:
+    graph[a].append(b)
+  return graph
+```
+
+**Key Insight:** Both solve the same problem differently:
+- **BFS approach**: Counts levels as you process forward
+- **DFS approach**: Finds longest path (similar to "Longest Path in DAG" problem)
+
 ## Problems Solved
 | Problem | Date | Result | Notes |
 |---------|------|--------|-------|

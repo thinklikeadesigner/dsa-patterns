@@ -177,6 +177,7 @@ def _can_concat(s, words, i, memo):
 | Can Concat (can words concatenate to form string?) | 2026-02-11 | Solved | 2 bugs: off-by-one in slicing (`slice_factor + 1` instead of `slice_factor`), and used `or` instead of `and` for the prefix match check. Fixed both with hints. |
 | Quickest Concat (min words to form string) | 2026-02-11 | Solved | Extended Can Concat to count minimum words. Key insight: same structure as min coins problem — `min(1 + recurse(remaining))` across all valid word choices. Return -1 if impossible (check for `float('inf')`). |
 | Valid Compound (check if elements form compound) | 2026-02-11 | Solved | Recognized as word break pattern, used pointer optimization. Pre-processed elements to lowercase once. Clean application of the pattern with minor case-handling twist. |
+| Count Compounds (count ways to form compound) | 2026-02-11 | Solved | Word break counting variant. Fixed base case (return 1 when complete) and initial count (start at 0, accumulate all paths). Needed hints on base case value and removing early return. |
 
 ## My Mistakes
 - **2026-02-08**: Grid path count — used `or` instead of `and` for the destination base case (`r == last_row or c == last_col` instead of `and`). This incorrectly assumes any cell on the last row/column has exactly 1 path to the end, ignoring possible "X" blockers along the remaining edge. The recursion handles edges naturally — only the actual destination `(rows-1, cols-1)` should return 1.

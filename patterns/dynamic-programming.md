@@ -14,6 +14,8 @@ The hardest part is defining the **state** and **transition**.
 
 ## Template Code
 
+### Tabulation (Bottom-Up) Examples
+
 ```python
 from functools import lru_cache
 
@@ -59,16 +61,421 @@ def knapsack(weights, values, capacity):
             if weights[i - 1] <= w:
                 dp[i][w] = max(dp[i][w], dp[i - 1][w - weights[i - 1]] + values[i - 1])
     return dp[n][capacity]
+```
 
-# Top-down with memoization
-@lru_cache(maxsize=None)
-def min_path_sum(grid, r=0, c=0):
-    if r == len(grid) - 1 and c == len(grid[0]) - 1:
-        return grid[r][c]
-    if r >= len(grid) or c >= len(grid[0]):
-        return float('inf')
-    return grid[r][c] + min(min_path_sum(grid, r + 1, c),
-                             min_path_sum(grid, r, c + 1))
+### Memoization (Top-Down) Pattern
+
+**Standard memoization template:**
+```python
+def problem(params):
+  return helper(params, {})
+
+def helper(params, memo):
+  # 1. Check memo
+  if key in memo:
+    return memo[key]
+
+  # 2. Base case(s)
+  if base_condition:
+    return base_value
+
+  # 3. Recursive logic
+  result = compute_from_subproblems()
+
+  # 4. Store and return
+  memo[key] = result
+  return result
+```
+
+**Category 1: Simple Numeric Sequences**
+```python
+# Fibonacci
+def fib(n):
+  return _fib(n, {})
+
+def _fib(n, memo):
+  if n in memo:
+    return memo[n]
+  if n == 0:
+    return 0
+  if n == 1:
+    return 1
+
+  memo[n] = _fib(n - 1, memo) + _fib(n - 2, memo)
+  return memo[n]
+
+# Tribonacci
+def tribonacci(n):
+  return _tribonacci(n, {})
+
+def _tribonacci(n, memo):
+  if n in memo:
+    return memo[n]
+  if n == 0:
+    return 0
+  if n in (1, 2):
+    return 1
+
+  memo[n] = (_tribonacci(n - 1, memo) +
+             _tribonacci(n - 2, memo) +
+             _tribonacci(n - 3, memo))
+  return memo[n]
+```
+
+**Category 2: Decision Problems (Yes/No)**
+```python
+# Sum Possible (can you make target sum with numbers?)
+def sum_possible(amount, numbers):
+  return _sum_possible(amount, numbers, {})
+
+def _sum_possible(amount, numbers, memo):
+  if amount in memo:
+    return memo[amount]
+  if amount < 0:
+    return False
+  if amount == 0:
+    return True
+
+  for num in numbers:
+    if _sum_possible(amount - num, numbers, memo):
+      memo[amount] = True
+      return True
+
+  memo[amount] = False
+  return False
+
+# Array Stepper (can you reach the end?)
+def array_stepper(numbers):
+  return _array_stepper(numbers, 0, {})
+
+def _array_stepper(numbers, i, memo):
+  if i in memo:
+    return memo[i]
+  if i >= len(numbers) - 1:
+    return True
+
+  max_step = numbers[i]
+  for step in range(1, max_step + 1):
+    if _array_stepper(numbers, i + step, memo):
+      memo[i] = True
+      return True
+
+  memo[i] = False
+  return False
+```
+
+**Category 3: Minimization Problems**
+```python
+# Min Change (fewest coins to make amount)
+def min_change(amount, coins):
+  result = _min_change(amount, coins, {})
+  return -1 if result == float('inf') else result
+
+def _min_change(amount, coins, memo):
+  if amount in memo:
+    return memo[amount]
+  if amount < 0:
+    return float('inf')
+  if amount == 0:
+    return 0
+
+  min_coins = float('inf')
+  for coin in coins:
+    num_coins = 1 + _min_change(amount - coin, coins, memo)
+    min_coins = min(min_coins, num_coins)
+
+  memo[amount] = min_coins
+  return min_coins
+
+# Summing Squares (min perfect squares summing to n)
+import math
+
+def summing_squares(n):
+  return _summing_squares(n, {})
+
+def _summing_squares(n, memo):
+  if n in memo:
+    return memo[n]
+  if n == 0:
+    return 0
+
+  min_squares = float('inf')
+  for i in range(1, int(math.sqrt(n)) + 1):
+    square = i * i
+    num_squares = 1 + _summing_squares(n - square, memo)
+    min_squares = min(min_squares, num_squares)
+
+  memo[n] = min_squares
+  return memo[n]
+
+# Quickest Concat (min words to form string)
+def quickest_concat(s, words):
+  result = _quickest_concat(s, words, 0, {})
+  return -1 if result == float('inf') else result
+
+def _quickest_concat(s, words, i, memo):
+  if i in memo:
+    return memo[i]
+  if i == len(s):
+    return 0
+
+  min_words = float('inf')
+  for word in words:
+    if s.startswith(word, i):
+      attempt = 1 + _quickest_concat(s, words, i + len(word), memo)
+      min_words = min(attempt, min_words)
+
+  memo[i] = min_words
+  return min_words
+```
+
+**Category 4: Counting Problems**
+```python
+# Counting Change (number of ways to make amount)
+def counting_change(amount, coins):
+  return _counting_change(amount, coins, 0, {})
+
+def _counting_change(amount, coins, i, memo):
+  key = (amount, i)
+  if key in memo:
+    return memo[key]
+  if amount == 0:
+    return 1
+  if i == len(coins):
+    return 0
+
+  coin = coins[i]
+  total = 0
+  for qty in range(0, (amount // coin) + 1):
+    remainder = amount - (qty * coin)
+    total += _counting_change(remainder, coins, i + 1, memo)
+
+  memo[key] = total
+  return total
+
+# Count Compounds (count ways to form compound from elements)
+def count_compounds(compound, elements):
+  elements = [e.lower() for e in elements]
+  return _count_compounds(compound, elements, 0, {})
+
+def _count_compounds(compound, elements, i, memo):
+  if i in memo:
+    return memo[i]
+  if i == len(compound):
+    return 1
+
+  count = 0
+  for element in elements:
+    if compound.startswith(element, i):
+      count += _count_compounds(compound, elements, i + len(element), memo)
+
+  memo[i] = count
+  return memo[i]
+```
+
+**Category 5: Grid Problems (2D State)**
+```python
+# Count Paths (count paths avoiding obstacles)
+def count_paths(grid):
+  return _count_paths(grid, 0, 0, {})
+
+def _count_paths(grid, r, c, memo):
+  pos = (r, c)
+  if pos in memo:
+    return memo[pos]
+  if r == len(grid) or c == len(grid[0]) or grid[r][c] == "X":
+    return 0
+  if r == len(grid) - 1 and c == len(grid[0]) - 1:
+    return 1
+
+  memo[pos] = (_count_paths(grid, r + 1, c, memo) +
+               _count_paths(grid, r, c + 1, memo))
+  return memo[pos]
+
+# Max Path Sum (maximize sum along path)
+def max_path_sum(grid):
+  return _max_path_sum(grid, 0, 0, {})
+
+def _max_path_sum(grid, r, c, memo):
+  pos = (r, c)
+  if pos in memo:
+    return memo[pos]
+  if r == len(grid) or c == len(grid[0]):
+    return float('-inf')
+  if r == len(grid) - 1 and c == len(grid[0]) - 1:
+    return grid[r][c]
+
+  down = _max_path_sum(grid, r + 1, c, memo)
+  right = _max_path_sum(grid, r, c + 1, memo)
+
+  memo[pos] = grid[r][c] + max(right, down)
+  return memo[pos]
+```
+
+**Category 6: Interval/Range DP (Two-Pointer State)**
+```python
+# Max Palindromic Subsequence
+def max_palin_subsequence(string):
+  return _max_palin_subsequence(string, 0, len(string) - 1, {})
+
+def _max_palin_subsequence(string, i, j, memo):
+  key = (i, j)
+  if key in memo:
+    return memo[key]
+  if i == j:
+    return 1
+  if i > j:
+    return 0
+
+  if string[i] == string[j]:
+    memo[key] = 2 + _max_palin_subsequence(string, i + 1, j - 1, memo)
+  else:
+    memo[key] = max(
+      _max_palin_subsequence(string, i + 1, j, memo),
+      _max_palin_subsequence(string, i, j - 1, memo)
+    )
+
+  return memo[key]
+
+# Overlap Subsequence (longest common subsequence)
+def overlap_subsequence(s1, s2):
+  return _overlap_subsequence(s1, s2, 0, 0, {})
+
+def _overlap_subsequence(s1, s2, i, j, memo):
+  key = (i, j)
+  if key in memo:
+    return memo[key]
+  if i >= len(s1) or j >= len(s2):
+    return 0
+
+  if s1[i] == s2[j]:
+    memo[key] = 1 + _overlap_subsequence(s1, s2, i + 1, j + 1, memo)
+  else:
+    memo[key] = max(
+      _overlap_subsequence(s1, s2, i + 1, j, memo),
+      _overlap_subsequence(s1, s2, i, j + 1, memo)
+    )
+
+  return memo[key]
+```
+
+**Category 7: Word Break Pattern (String + Index)**
+```python
+# Can Concat (can words form string?)
+def can_concat(s, words):
+  return _can_concat(s, words, 0, {})
+
+def _can_concat(s, words, i, memo):
+  if i in memo:
+    return memo[i]
+  if i == len(s):
+    return True
+
+  for word in words:
+    if s.startswith(word, i):
+      if _can_concat(s, words, i + len(word), memo):
+        memo[i] = True
+        return True
+
+  memo[i] = False
+  return False
+
+# Valid Compound (chemistry word break)
+def valid_compound(compound, elements):
+  return _valid_compound(compound, elements, 0, {})
+
+def _valid_compound(compound, elements, i, memo):
+  if i == len(compound):
+    return True
+  if i in memo:
+    return memo[i]
+
+  for element in elements:
+    if compound.startswith(element.lower(), i):
+      if _valid_compound(compound, elements, i + len(element), memo):
+        memo[i] = True
+        return True
+
+  memo[i] = False
+  return False
+```
+
+**Category 8: Graph + DP (DAG Longest Path)**
+```python
+# Longest Path in DAG
+def longest_path(graph):
+  memo = {}
+  max_path = 0
+
+  for node in graph:
+    current_path = _longest_path(graph, node, memo)
+    max_path = max(max_path, current_path)
+
+  return max_path
+
+def _longest_path(graph, node, memo):
+  if node in memo:
+    return memo[node]
+
+  max_paths = 0
+  for neighbor in graph[node]:
+    paths = _longest_path(graph, neighbor, memo) + 1
+    max_paths = max(paths, max_paths)
+
+  memo[node] = max_paths
+  return memo[node]
+
+# Semesters Required (longest dependency chain)
+def semesters_required(num_courses, prereqs):
+  graph = build_graph(num_courses, prereqs)
+  distance = {}
+
+  # Initialize leaf nodes (no dependencies)
+  for course in range(num_courses):
+    if len(graph[course]) == 0:
+      distance[course] = 1
+
+  for course in range(num_courses):
+    _traverse_distance(graph, course, distance)
+
+  return max(distance.values())
+
+def _traverse_distance(graph, node, distance):
+  if node in distance:
+    return distance[node]
+
+  max_distance = 0
+  for neighbor in graph[node]:
+    neighbor_distance = _traverse_distance(graph, neighbor, distance)
+    max_distance = max(max_distance, neighbor_distance)
+
+  distance[node] = 1 + max_distance
+  return distance[node]
+
+def build_graph(num_courses, prereqs):
+  graph = {i: [] for i in range(num_courses)}
+  for a, b in prereqs:
+    graph[a].append(b)
+  return graph
+```
+
+**Category 9: House Robber Pattern (Skip Elements)**
+```python
+# Non-Adjacent Sum (max sum without adjacent elements)
+def non_adjacent_sum(nums):
+  return _non_adjacent_sum(nums, 0, {})
+
+def _non_adjacent_sum(nums, i, memo):
+  if i in memo:
+    return memo[i]
+  if i >= len(nums):
+    return 0
+
+  include = nums[i] + _non_adjacent_sum(nums, i + 2, memo)
+  exclude = _non_adjacent_sum(nums, i + 1, memo)
+
+  memo[i] = max(include, exclude)
+  return memo[i]
 ```
 
 ## Key Categories

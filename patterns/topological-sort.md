@@ -82,6 +82,9 @@ def topo_sort_dfs(num_nodes, edges):
 ## Problems Solved
 | Problem | Date | Result | Notes |
 |---------|------|--------|-------|
+| Semesters Required | 2026-02-11 | Solved | Kahn's algorithm with level-order BFS. Struggled with understanding indegrees concept, building directed graph, and processing queue level-by-level. |
 
 ## My Mistakes
-- (none yet)
+- **2026-02-11**: Initially built undirected graph (bidirectional edges) instead of directed
+- **2026-02-11**: Didn't understand what indegree means (number of incoming edges = prerequisites count)
+- **2026-02-11**: Had indentation issues - placed while loop and return inside the for loop

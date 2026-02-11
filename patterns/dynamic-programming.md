@@ -402,55 +402,57 @@ def _valid_compound(compound, elements, i, memo):
 
 **Category 8: Graph + DP (DAG Longest Path)**
 ```python
-# Longest Path in DAG
+# Longest Path in DAG (counts edges)
 def longest_path(graph):
   memo = {}
   max_path = 0
 
   for node in graph:
-    current_path = _longest_path(graph, node, memo)
+    current_path = dfs(graph, node, memo)
     max_path = max(max_path, current_path)
 
   return max_path
 
-def _longest_path(graph, node, memo):
+def dfs(graph, node, memo):
   if node in memo:
     return memo[node]
 
-  max_paths = 0
+  max_length = 0
   for neighbor in graph[node]:
-    paths = _longest_path(graph, neighbor, memo) + 1
-    max_paths = max(paths, max_paths)
+    length = dfs(graph, neighbor, memo) + 1
+    max_length = max(length, max_length)
 
-  memo[node] = max_paths
+  memo[node] = max_length
   return memo[node]
 
-# Semesters Required (longest dependency chain)
+# Semesters Required (counts nodes, not edges)
 def semesters_required(num_courses, prereqs):
   graph = build_graph(num_courses, prereqs)
-  distance = {}
+  memo = {}
 
-  # Initialize leaf nodes (no dependencies)
-  for course in range(num_courses):
-    if len(graph[course]) == 0:
-      distance[course] = 1
+  # Calculate longest path from each node
+  max_length = 0
+  for node in graph:
+    current_length = dfs(graph, node, memo)
+    max_length = max(max_length, current_length)
 
-  for course in range(num_courses):
-    _traverse_distance(graph, course, distance)
+  return max_length
 
-  return max(distance.values())
+def dfs(graph, node, memo):
+  # If already calculated, return memoized result
+  if node in memo:
+    return memo[node]
 
-def _traverse_distance(graph, node, distance):
-  if node in distance:
-    return distance[node]
-
-  max_distance = 0
+  # Find the longest path among all neighbors
+  max_length = 0
   for neighbor in graph[node]:
-    neighbor_distance = _traverse_distance(graph, neighbor, distance)
-    max_distance = max(max_distance, neighbor_distance)
+    neighbor_length = dfs(graph, neighbor, memo)
+    max_length = max(neighbor_length, max_length)
 
-  distance[node] = 1 + max_distance
-  return distance[node]
+  # This node's path length = 1 (itself) + longest neighbor path
+  # For leaf nodes: graph[node] is empty, so max_length = 0, result = 1
+  memo[node] = 1 + max_length
+  return memo[node]
 
 def build_graph(num_courses, prereqs):
   graph = {i: [] for i in range(num_courses)}

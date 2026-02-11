@@ -77,11 +77,16 @@ You're traversing a grid. What condition means "I've gone out of bounds"?
 <summary>Answer</summary>
 
 ```python
-if r < 0 or c < 0 or r >= rows or c >= cols:
+rinbounds = 0 <= r < len(grid)
+cinbounds = 0 <= c < len(grid[0])
+
+if not rinbounds or not cinbounds:
     return 0  # or float('-inf'), or whatever failure value
 ```
 
-**Why `or`?** **Any one** of these conditions means you're out of bounds. You don't need to be negative in both dimensions — just one is enough to fail.
+**Why `or`?** **Any one** dimension being out of bounds means the cell is invalid. You don't need both to be out of bounds — just one is enough to fail.
+
+**The pattern**: Check each dimension separately, then combine with `or` because ANY failure disqualifies the cell.
 
 </details>
 
@@ -128,11 +133,16 @@ You're at `(r, c)` in a grid with obstacles marked 'X'. What's the condition for
 <summary>Answer</summary>
 
 ```python
-if r < 0 or c < 0 or r >= rows or c >= cols or grid[r][c] == 'X':
+rinbounds = 0 <= r < len(grid)
+cinbounds = 0 <= c < len(grid[0])
+
+if not rinbounds or not cinbounds or grid[r][c] == 'X':
     return 0
 ```
 
 **Why `or`?** **Any one** of these problems (out of bounds OR obstacle) makes this cell invalid. You don't need multiple problems — just one is enough to stop.
+
+**Note**: You must check bounds BEFORE accessing `grid[r][c]`, otherwise you'll get an index error. Some people write it as one compound condition, but your style (separate variables) is clearer and safer.
 
 </details>
 

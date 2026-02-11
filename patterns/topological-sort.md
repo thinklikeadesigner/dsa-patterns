@@ -175,6 +175,19 @@ def build_graph(num_courses, prereqs):
 |---------|------|--------|-------|
 | Semesters Required | 2026-02-11 | Solved | Kahn's algorithm with level-order BFS. Struggled with understanding indegrees concept, building directed graph, and processing queue level-by-level. |
 
+## Key Takeaways
+- **Directed vs Undirected graphs**: For dependency problems with edges `(a, b)` meaning "a before b", build a **directed** graph with only `graph[a].append(b)`. Do NOT do `graph[b].append(a)` - that creates bidirectional edges (undirected graph).
+  ```python
+  # ✓ Correct (directed)
+  for a, b in prereqs:
+    graph[a].append(b)
+
+  # ✗ Wrong (undirected)
+  for a, b in prereqs:
+    graph[a].append(b)
+    graph[b].append(a)  # Don't do this!
+  ```
+
 ## My Mistakes
 - **2026-02-11**: Initially built undirected graph (bidirectional edges) instead of directed
 - **2026-02-11**: Didn't understand what indegree means (number of incoming edges = prerequisites count)

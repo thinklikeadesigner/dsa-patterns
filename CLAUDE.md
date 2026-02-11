@@ -146,6 +146,16 @@ two-pointers,google+meta,,2026-02-08,0,2.5,0,0
 - Keep daily plans short and actionable. Don't overwhelm. 2–3 items max.
 - Be encouraging but honest about progress.
 
+## Git Workflow
+
+After ANY change to files in this repository (tracker.csv, pattern files, CLAUDE.md, etc.):
+
+1. Run `git add .`
+2. Run `git commit -m "updated"`
+3. Run `git push`
+
+**CRITICAL**: This must happen after EVERY file modification. The user wants all changes automatically committed and pushed.
+
 ---
 
 ## User Workflow

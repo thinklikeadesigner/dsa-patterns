@@ -88,6 +88,11 @@ def has_cycle(graph, n):
 - **Tree DFS**: All root-to-leaf paths, max depth, diameter
 - **DFS with state/coloring**: Cycle detection in directed graphs (white/gray/black)
 
+## Key Takeaways
+- **Counting edges vs nodes**: When counting **edges**, start at 0 and add 1 for each edge traversed. When counting **nodes**, start at 1.
+- **Longest path with multiple branches**: Always use **max()** to find the longest branch, never sum all paths.
+- **DAG optimization**: For DAGs (directed acyclic graphs), add **memoization** to avoid recalculating overlapping subproblems. No need for visited set since there are no cycles.
+
 ## Problems Solved
 | Problem | Date | Result | Notes |
 |---------|------|--------|-------|

@@ -52,6 +52,7 @@ When the user says they solved (or attempted) a problem:
 7. Add one row per pattern to `problem_patterns.csv` with:
    - `approach_notes`: how this pattern solves the problem
    - `time_complexity`: Big-O for this approach
+   - `space_complexity`: Big-O space for this approach
    - `when_to_prefer`: when you'd choose this approach over the others
 
 ### "What patterns solve [problem]?"
@@ -61,6 +62,7 @@ When the user says they solved (or attempted) a problem:
    - Pattern name
    - Approach notes
    - Time complexity
+   - Space complexity
    - When to prefer this approach
 3. Highlight trade-offs between approaches.
 
@@ -98,7 +100,7 @@ When the user says they solved (or attempted) a problem:
 1. Show **only the problem name**.
 2. Ask: **"What pattern(s) would you use? Walk through your approach."**
 3. Wait for the user's explanation.
-4. **Then** show the saved `approach_notes` and `time_complexity` from `problem_patterns.csv` for comparison.
+4. **Then** show the saved `approach_notes`, `time_complexity`, and `space_complexity` from `problem_patterns.csv` for comparison.
 5. Ask: "How did that go? **Again (1) / Hard (2) / Good (3) / Easy (4)**"
 6. Update `problems.csv` using the FSRS algorithm below.
 
@@ -196,15 +198,16 @@ semesters-required,2026-02-11,Solved,5.0,0,,2026-02-11,0,"Kahn's algorithm with 
 ## problem_patterns.csv Format
 
 ```csv
-problem,pattern,approach_notes,time_complexity,when_to_prefer
-semesters-required,topological-sort,Kahn's algorithm: BFS from zero-indegree nodes,O(V+E),When you need the number of levels/layers
-semesters-required,dynamic-programming,DFS + memo: longest path from any start node,O(V+E),When thinking bottom-up from leaves
+problem,pattern,approach_notes,time_complexity,space_complexity,when_to_prefer
+semesters-required,topological-sort,Kahn's algorithm: BFS from zero-indegree nodes,O(V+E),O(V+E),When you need the number of levels/layers
+semesters-required,dynamic-programming,DFS + memo: longest path from any start node,O(V+E),O(V),When thinking bottom-up from leaves
 ```
 
 - `problem`: kebab-case, matches a row in `problems.csv`
 - `pattern`: kebab-case, matches a row in `tracker.csv` and a file in `patterns/`
 - `approach_notes`: how this pattern solves the problem
 - `time_complexity`: Big-O for this specific approach
+- `space_complexity`: Big-O space for this specific approach
 - `when_to_prefer`: when you'd choose this approach over alternatives
 
 The many-to-many relationship is the key insight: one problem can map to multiple patterns, and one pattern solves many problems. The `when_to_prefer` column trains the meta-skill of knowing *which* approach to reach for.

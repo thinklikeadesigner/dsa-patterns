@@ -1,16 +1,16 @@
-problem,pattern,approach_notes,time_complexity,when_to_prefer
-longest-path-dag,dfs,DFS + memoization from each node taking max of neighbors,O(V+E),Natural fit — explores all paths depth-first
-longest-path-dag,dynamic-programming,Memoized recursion caching longest path from each node,O(V+E),Same as DFS here — the memo IS the DP. Recognize they're equivalent.
-grid-path-count,dynamic-programming,Memoized recursion: count paths right + count paths down,O(r*c),Standard grid DP — subproblems are sub-grids
-max-path-sum,dynamic-programming,Memoized recursion: max of going right vs going down,O(r*c),Standard grid DP — same structure as path count but with max
-summing-squares,dynamic-programming,For each perfect square <= n try subtracting it and recurse,O(n*sqrt(n)),Classic unbounded knapsack variant
-counting-change,dynamic-programming,Count ways using coins — order doesn't matter so iterate coins in outer loop,O(n*c),Unbounded knapsack counting variant
-array-stepper,dynamic-programming,From each position check if any reachable position can reach the end,O(n^2),Can also be solved greedily in O(n) but DP is the natural first approach
-max-palindromic-subsequence,dynamic-programming,Two-pointer style recursion: if ends match take both + recurse inner; else max of dropping either end,O(n^2),Interval DP — subproblems are substrings
-can-concat,dynamic-programming,Try each word as prefix; if matches recurse on remainder,O(n*w*k),Word break pattern — n=len w=num_words k=avg_word_len
-quickest-concat,dynamic-programming,Same as can-concat but track min count instead of boolean,O(n*w*k),Min-cost variant of word break
-valid-compound,dynamic-programming,Word break with pointer optimization and case normalization,O(n*w*k),Same word break structure with domain-specific preprocessing
-count-compounds,dynamic-programming,Word break counting — sum all valid decompositions instead of short-circuit,O(n*w*k),Counting variant — change early return to accumulation
-semesters-required,topological-sort,Kahn's algorithm: BFS from zero-indegree nodes level by level,O(V+E),When you need the number of levels/layers (semesters = layers)
-semesters-required,bfs,Level-order BFS on DAG after removing prerequisites,O(V+E),The Kahn's approach IS BFS — recognizing this connection matters
-semesters-required,dynamic-programming,DFS + memo: longest path from any start node = max semesters,O(V+E),When you want to think bottom-up from leaves — max(1 + dp(prereq)) for each course
+problem,pattern,approach_notes,time_complexity,space_complexity,when_to_prefer
+longest-path-dag,dfs,DFS + memoization from each node taking max of neighbors,O(V+E),O(V),Natural fit — explores all paths depth-first
+longest-path-dag,dynamic-programming,Memoized recursion caching longest path from each node,O(V+E),O(V),Same as DFS here — the memo IS the DP. Recognize they're equivalent.
+grid-path-count,dynamic-programming,Memoized recursion: count paths right + count paths down,O(r*c),O(r*c),Standard grid DP — subproblems are sub-grids
+max-path-sum,dynamic-programming,Memoized recursion: max of going right vs going down,O(r*c),O(r*c),Standard grid DP — same structure as path count but with max
+summing-squares,dynamic-programming,For each perfect square <= n try subtracting it and recurse,O(n*sqrt(n)),O(n),Classic unbounded knapsack variant
+counting-change,dynamic-programming,Count ways using coins — order doesn't matter so iterate coins in outer loop,O(n*c),O(n),Unbounded knapsack counting variant
+array-stepper,dynamic-programming,From each position check if any reachable position can reach the end,O(n^2),O(n),Can also be solved greedily in O(n) but DP is the natural first approach
+max-palindromic-subsequence,dynamic-programming,Two-pointer style recursion: if ends match take both + recurse inner; else max of dropping either end,O(n^2),O(n^2),Interval DP — subproblems are substrings
+can-concat,dynamic-programming,Try each word as prefix; if matches recurse on remainder,O(n*w*k),O(n),Word break pattern — n=len w=num_words k=avg_word_len
+quickest-concat,dynamic-programming,Same as can-concat but track min count instead of boolean,O(n*w*k),O(n),Min-cost variant of word break
+valid-compound,dynamic-programming,Word break with pointer optimization and case normalization,O(n*w*k),O(n),Same word break structure with domain-specific preprocessing
+count-compounds,dynamic-programming,Word break counting — sum all valid decompositions instead of short-circuit,O(n*w*k),O(n),Counting variant — change early return to accumulation
+semesters-required,topological-sort,Kahn's algorithm: BFS from zero-indegree nodes level by level,O(V+E),O(V+E),When you need the number of levels/layers (semesters = layers)
+semesters-required,bfs,Level-order BFS on DAG after removing prerequisites,O(V+E),O(V),The Kahn's approach IS BFS — recognizing this connection matters
+semesters-required,dynamic-programming,DFS + memo: longest path from any start node = max semesters,O(V+E),O(V),When you want to think bottom-up from leaves — max(1 + dp(prereq)) for each course

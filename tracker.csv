@@ -10,6 +10,7 @@ backtracking,google+meta,,2026-02-08,5.0,0,0
 topological-sort,google,2026-02-11,2026-02-12,6.0,1.0,1
 union-find,meta,,2026-02-08,5.0,0,0
 merge-intervals,meta,,2026-02-08,5.0,0,0
+stack,google+meta,,2026-02-08,5.0,0,0
 monotonic-stack,google+meta,,2026-02-08,5.0,0,0
 heap-priority-queue,google+meta,,2026-02-08,5.0,0,0
 linked-lists,meta,,2026-02-08,5.0,0,0

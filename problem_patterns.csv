@@ -14,3 +14,4 @@ count-compounds,dynamic-programming,Word break counting — sum all valid decomp
 semesters-required,topological-sort,Kahn's algorithm: BFS from zero-indegree nodes level by level,O(V+E),O(V+E),When you need the number of levels/layers (semesters = layers)
 semesters-required,bfs,Level-order BFS on DAG after removing prerequisites,O(V+E),O(V),The Kahn's approach IS BFS — recognizing this connection matters
 semesters-required,dynamic-programming,DFS + memo: longest path from any start node = max semesters,O(V+E),O(V),When you want to think bottom-up from leaves — max(1 + dp(prereq)) for each course
+reverse-some-chars,stack,Collect target chars in stack then rebuild string popping from stack (LIFO reverses order),O(n),O(n),When you need to reverse a subset of elements while maintaining relative position of others

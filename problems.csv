@@ -11,3 +11,4 @@ quickest-concat,2026-02-11,Solved,5.0,0,,2026-02-11,0,Extended Can Concat to cou
 valid-compound,2026-02-11,Solved,5.0,0,,2026-02-11,0,Word break pattern with pointer optimization. Pre-processed elements to lowercase.
 count-compounds,2026-02-11,Solved,5.0,0,,2026-02-11,0,Word break counting variant. Fixed base case (return 1 when complete) and initial count.
 semesters-required,2026-02-11,Solved,5.0,0,,2026-02-11,0,"Kahn's algorithm with level-order BFS. Struggled with indegrees concept, directed graph construction, and queue level processing."
+reverse-some-chars,2026-02-11,Struggled,5.0,0,,2026-02-11,0,"Stack reversal pattern. 2 bugs: enumerate() parameter order wrong (idx,val not val,idx) and modified string during iteration instead of building result list."

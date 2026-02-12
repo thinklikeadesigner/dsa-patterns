@@ -281,10 +281,14 @@ for char in s:
 | Problem | Date | Result | Notes |
 |---------|------|--------|-------|
 | Reverse Some Chars | 2026-02-11 | Struggled | 2 bugs: enumerate() order wrong, modified string during iteration. Solved in 4 min but had implementation bugs. |
+| Paired Parentheses | 2026-02-11 | Failed | 3 bugs: swapped open/closed variable assignments, didn't check for negative count, used if/if instead of if/elif. |
 
 ---
 
 ## My Mistakes
 
-- **2026-02-11**: Used `for value, idx in enumerate(s)` instead of `for idx, value in enumerate(s)`. Remember: enumerate returns **(index, value)** not (value, index).
-- **2026-02-11**: Modified string during iteration with string slicing: `s = s[:i] + new + s[i+1:]`. This is O(n) per operation and breaks iteration. Use a result list instead.
+- **2026-02-11 (Reverse Some Chars)**: Used `for value, idx in enumerate(s)` instead of `for idx, value in enumerate(s)`. Remember: enumerate returns **(index, value)** not (value, index).
+- **2026-02-11 (Reverse Some Chars)**: Modified string during iteration with string slicing: `s = s[:i] + new + s[i+1:]`. This is O(n) per operation and breaks iteration. Use a result list instead.
+- **2026-02-11 (Paired Parentheses)**: Swapped variable names — assigned `open = ")"` and `closed = "("`. Always double-check variable assignments match their names.
+- **2026-02-11 (Paired Parentheses)**: Only checked if count equals zero at the end, but didn't check if count ever goes **negative** during iteration. Need: `if count < 0: return False` inside the loop to catch invalid orderings like `")("`.
+- **2026-02-11 (Paired Parentheses)**: The counter technique only works for single bracket type. For multiple types `()[]{}`, you need a full stack to track which opening bracket to match.

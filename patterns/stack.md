@@ -282,6 +282,7 @@ for char in s:
 |---------|------|--------|-------|
 | Reverse Some Chars | 2026-02-11 | Struggled | 2 bugs: enumerate() order wrong, modified string during iteration. Solved in 4 min but had implementation bugs. |
 | Paired Parentheses | 2026-02-11 | Failed | 3 bugs: swapped open/closed variable assignments, didn't check for negative count, used if/if instead of if/elif. |
+| Decompress Braces (LC 394) | 2026-02-11 | Watched | Nested structures with stack state management. Too complex initially — watched walkthrough. Stack stores (prev_string, repeat_count) tuples. |
 
 ---
 

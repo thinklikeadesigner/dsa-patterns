@@ -16,3 +16,4 @@ semesters-required,bfs,Level-order BFS on DAG after removing prerequisites,O(V+E
 semesters-required,dynamic-programming,DFS + memo: longest path from any start node = max semesters,O(V+E),O(V),When you want to think bottom-up from leaves — max(1 + dp(prereq)) for each course
 reverse-some-chars,stack,Collect target chars in stack then rebuild string popping from stack (LIFO reverses order),O(n),O(n),When you need to reverse a subset of elements while maintaining relative position of others
 paired-parentheses,stack,Counter technique: increment on open decrement on close; check count never goes negative and ends at zero,O(n),O(1),Simple parentheses matching with one bracket type — use full stack for multiple types
+decompress-braces,stack,Stack stores (prev_string, repeat_count). On '{' push state and reset; on '}' pop and multiply current by count then append to prev,O(n),O(n),Nested structures where you need to remember state before each opening bracket

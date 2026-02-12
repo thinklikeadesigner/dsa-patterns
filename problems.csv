@@ -13,3 +13,4 @@ count-compounds,2026-02-11,Solved,5.0,0,,2026-02-11,0,Word break counting varian
 semesters-required,2026-02-11,Solved,5.0,0,,2026-02-11,0,"Kahn's algorithm with level-order BFS. Struggled with indegrees concept, directed graph construction, and queue level processing."
 reverse-some-chars,2026-02-11,Struggled,5.0,0,,2026-02-11,0,"Stack reversal pattern. 2 bugs: enumerate() parameter order wrong (idx,val not val,idx) and modified string during iteration instead of building result list."
 paired-parentheses,2026-02-11,Failed,5.0,0,,2026-02-11,0,"Counter technique. 3 bugs: swapped open=')'  and closed='(' variable assignments; didn't check for negative count (allows ')(' to pass); used if/if instead of if/elif."
+decompress-braces,2026-02-11,Watched,5.0,0,,2026-02-11,0,"LC 394 Decode String. Stack with nested structures. Watched walkthrough - too complex to solve initially. Stack stores (prev_string, repeat_count) pairs."
